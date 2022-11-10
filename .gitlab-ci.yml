@@ -1,0 +1,32 @@
+image: golang:latest
+
+variables:
+  REPO: my.gitlab.com
+  GROUP: server_management
+  PROJECT: go-hello
+
+stages:
+ - test
+ - build
+
+before_script:
+  - mkdir -p $GOPATH/src/$REPO/$GROUP $GOPATH/src/_/builds
+  - cp -r $CI_PROJECT_DIR $GOPATH/src/$REPO/$GROUP/$PROJECT
+  - ln -s $GOPATH/src/$REPO/$GROUP $GOPATH/src/_/builds/$GROUP
+  - go get -v -d ./...
+
+unit_tests:
+  stage: test
+  script:
+    - go test -v ./...
+
+build:
+  stage: build
+  script:
+    - go build -v -o 
+  only:
+    - main
+  artifacts:
+    paths:
+      - /builds/server_management/hello-go/hi
+    expire_in: 1 hour
